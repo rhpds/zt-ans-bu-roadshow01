@@ -37,13 +37,6 @@ tabs:
     external: true
     modules:
      - module-03
-  - name: code
-    url: https://code-server-${guid}.${domain}/
-    modules:
-      - module-01
-      - module-02
-      - module-03
-    external: true
 
   # - name: Windows RDP
   #   url: https://windows-ironrdp-${guid}.${domain}/
