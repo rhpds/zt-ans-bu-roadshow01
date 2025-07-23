@@ -8,7 +8,7 @@ content:
   sources:
     - url: .
       start_path: content
-      worktrees: false
+      branches: [main]
 
 ui:
   bundle:
