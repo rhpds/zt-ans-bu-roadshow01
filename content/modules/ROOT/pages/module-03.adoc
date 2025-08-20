@@ -1,5 +1,5 @@
 = Lab Guide: Generating a Windows Patch Report
-:toc:
+:notoc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
@@ -31,7 +31,7 @@ We can gather all the required update details from the Windows host and then use
 +
 Go to **Automation Execution** → **Templates** and click on the name of the **Windows Update Report** job template. Before launching, you need to create a survey to choose which type of updates to search for.
 +
-image::../assets/images/update-template.png[Windows Update Report template details, opts="border"]
+image::update-template.png[Windows Update Report template details, opts="border"]
 
 . **Create a survey for the update category.**
 +
@@ -45,13 +45,13 @@ Go to the **Survey** tab and click **Create survey question**. Configure it with
 +
 NOTE: To add each multiple choice option, you will need to type it in the field and then click the **+** icon to add it to the list.
 +
-image::../assets/images/survey.png[Configuring the survey question, opts="border"]
+image::survey.png[Configuring the survey question, opts="border"]
 
 . **Save and enable the survey.**
 +
 Click **Create survey question** to save your changes. Then, you must **enable the survey** by clicking the toggle switch at the top of the survey page.
 +
-image::../assets/images/survey-enable.png[Enabling the survey with the toggle switch, opts="border"]
+image::survey-enable.png[Enabling the survey with the toggle switch, opts="border"]
 
 . **Launch the template and generate the report.**
 +
@@ -61,7 +61,7 @@ Navigate back to the main **Templates** list and launch the **Windows Update Rep
 +
 Once the job has completed, navigate to the **Windows Report** tab in your lab environment. You should see the report detailing the outstanding security update needed for the system.
 +
-image::../assets/images/update-report.png[Generated Windows update report, opts="border"]
+image::update-report.png[Generated Windows update report, opts="border"]
 
 ---
 
@@ -77,7 +77,7 @@ Navigate to **Automation Execution** → **Jobs**. You should see that the **Ser
 +
 You can also run the **Check Windows Backups** template again to see the list of VSS snapshots that have been created by the scheduled job.
 +
-image::../assets/images/vss-snaps.png[List of VSS snapshots created by the scheduled job, opts="border"]
+image::vss-snaps.png[List of VSS snapshots created by the scheduled job, opts="border"]
 
 ---
 
