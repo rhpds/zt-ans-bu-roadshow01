@@ -1,5 +1,5 @@
 = Lab Guide: Infrastructure Introspection and Reporting
-:toc:
+:notoc:
 :toc-title: Table of Contents
 :sectnums:
 :icons: font
