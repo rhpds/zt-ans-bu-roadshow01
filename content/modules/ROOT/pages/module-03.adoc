@@ -1,132 +1,95 @@
-= Windows Patching Report with Ansible
+= Lab Guide: Generating a Windows Patch Report
 :toc:
-:toc-placement: auto
+:toc-title: Table of Contents
+:sectnums:
+:icons: font
 
-== Introduction
+_A guide to using Ansible Automation Platform to generate a patch report for a Windows Server._
 
-Generating patch reports is a critical operational task for maintaining system security and compliance. When you don't have direct access to Windows systems, Ansible becomes an invaluable tool for gathering patch information and delivering actionable reports to your Windows administration teams.
+---
 
-This lab demonstrates how to use Ansible to scan Windows systems for required patches and generate comprehensive reports that can be easily shared with stakeholders.
+== Scenario: Introspection
 
-=== Lab Environment Setup
+Another great use case for introspection is generating a patching report. Imagine your Windows server is sure to need some patches, but you don't have direct access to the system. You can use Ansible to query the server for required patches and provide a clean report back to the Windows team.
 
-==== Access Credentials
+First, log into the Ansible Automation Platform instance using the credentials below.
 
-[cols="1,1"]
+.Login Credentials
+[cols="1,2a"]
 |===
-| Username | Password
-
-| admin
-| ansible123!
+| Username | `admin`
+| Password | `ansible123!`
 |===
 
+---
 
+== Generating a Windows Patch Report
 
-== Lab Exercise
+We can gather all the required update details from the Windows host and then use a Jinja2 template to create a report. We will even host the report as a web page directly on the Windows server!
 
-=== Exercise 1: Creating a Windows Update Report
+. **Navigate to the job template.**
++
+Go to **Automation Execution** → **Templates** and click on the name of the **Windows Update Report** job template. Before launching, you need to create a survey to choose which type of updates to search for.
++
+image::../assets/images/update-template.png[Windows Update Report template details, opts="border"]
 
-We'll create a dynamic patch report using Ansible's templating capabilities and publish it as a web page directly on the Windows host for easy access.
+. **Create a survey for the update category.**
++
+Go to the **Survey** tab and click **Create survey question**. Configure it with the following details:
++
+* **Question:** `Which update category are you wanting to search for?`
+* **Description:** `Windows Update Category`
+* **Answer variable name:** `update_catagory`
+* **Answer type:** `Multiple Choice (single select)`
+* **Multiple Choice Options:** `Security Updates`, `Critical Updates`, `Tools`, `Definition Updates`, `Updates`
++
+NOTE: To add each multiple choice option, you will need to type it in the field and then click the **+** icon to add it to the list.
++
+image::../assets/images/survey.png[Configuring the survey question, opts="border"]
 
-==== Step 1: Access the Windows Update Template
+. **Save and enable the survey.**
++
+Click **Create survey question** to save your changes. Then, you must **enable the survey** by clicking the toggle switch at the top of the survey page.
++
+image::../assets/images/survey-enable.png[Enabling the survey with the toggle switch, opts="border"]
 
-. Navigate to *Automation Execution* → *Templates*
-. Select the *Windows Update Report* template
+. **Launch the template and generate the report.**
++
+Navigate back to the main **Templates** list and launch the **Windows Update Report** template. You will now be prompted with the survey. Select **Security Updates** from the dropdown list and launch the job.
 
-Before launching the template, we need to configure a survey to allow users to specify which type of updates they want to scan for.
+. **View the generated report.**
++
+Once the job has completed, navigate to the **Windows Report** tab in your lab environment. You should see the report detailing the outstanding security update needed for the system.
++
+image::../assets/images/update-report.png[Generated Windows update report, opts="border"]
 
-.Windows Update Template
-image::update-template.png[Update Template Interface]
+---
 
-==== Step 2: Configure the Survey
+== Final Check: Verifying Scheduled Jobs
 
-. Navigate to the *Survey* tab
-. Create a new survey question with the following details:
+Before finishing, let's verify that the VSS snapshot schedule you created earlier is working as expected.
 
-===== Survey Configuration:
+. **Check the job history.**
++
+Navigate to **Automation Execution** → **Jobs**. You should see that the **Server Backup - VSS/Windows** jobs have been running automatically based on the schedule.
 
-* *Question:* `Which update category are you wanting to search for?`
-* *Description:* `Windows Update Category`
-* *Answer variable name:* `update_category`
-* *Answer type:* `Multiple Choice (single select)`
+. **Verify the snapshots.**
++
+You can also run the **Check Windows Backups** template again to see the list of VSS snapshots that have been created by the scheduled job.
++
+image::../assets/images/vss-snaps.png[List of VSS snapshots created by the scheduled job, opts="border"]
 
-===== Multiple Choice Options:
+---
 
-Add each of the following options (click the + button after entering each option):
+== Conclusion
 
-* Security Updates
-* Critical Updates  
-* Tools
-* Definition Updates
-* Updates
+Well done! 🎉 You have successfully used Ansible to automate a number of backup and introspection tasks. You gathered data from both Linux and Windows systems and presented it as a clean, actionable report for your team—all without impacting production systems.
 
-[NOTE]
-====
-To add each multiple choice option, fill in the field and then click the + button to add it to the list.
-====
+---
 
-.Survey Configuration
-image::survey.png[Survey Setup Interface]
+== Appendix: Windows Report Code Snippets
 
-==== Step 3: Enable and Save the Survey
-
-. Click *Create survey question* to save your configuration
-. Enable the survey using the toggle at the top of the panel
-
-.Survey Enablement
-image::survey-enable.png[Survey Enable Toggle]
-
-==== Step 4: Execute the Patch Scan
-
-. Launch the template
-. From the survey dropdown, select *Security Updates*
-. Wait for the template execution to complete
-
-The Ansible playbook will connect to the Windows server, scan for available security updates, and generate a comprehensive HTML report.
-
-==== Step 5: Review the Generated Report
-
-. Once the template completes, navigate to the *Windows Report* tab
-. Review the outstanding updates that are needed for the system
-
-The report will display all available security updates, including:
-- Update titles and descriptions
-- Knowledge Base (KB) numbers
-- Installation requirements
-- Download sizes
-
-.Windows Update Report
-image::update-report.png[Windows Update Report Results]
-
-[TIP]
-====
-You can re-run the template with different update categories to generate focused reports for specific types of patches (Critical Updates, Definition Updates, etc.).
-====
-
-=== Exercise 2: Verifying Scheduled Tasks
-
-Let's verify that our previously scheduled backup tasks are running correctly.
-
-==== Step 1: Check Scheduled Job Execution
-
-. Navigate to *Automation Execution* → *Jobs*
-. Observe that your *Server Backup - VSS/Windows* jobs that were scheduled earlier have been running automatically
-
-==== Step 2: Verify VSS Snapshots
-
-. Execute the *Check Windows Backups* template
-. Confirm that VSS snapshots are being created successfully
-
-.VSS Snapshots Verification
-image::vss-snaps.png[VSS Snapshots Status]
-
-This verification confirms that your automated backup strategy is working correctly alongside your new patch reporting capabilities.
-
-== Code Reference
-
-=== Windows Update Report Implementation
-
-Here's the key Ansible code used for generating Windows patch reports:
+If you're interested, here are some key code snippets from the Windows update report playbook.
 
 [source,yaml]
 ----
@@ -138,12 +101,12 @@ tasks:
 
   - name: Show us the updates
     debug:
-      msg: "{{ update_category }}"
+      msg: "{{ update_catagory }}"
 
   - name: Check available updates
     ansible.windows.win_updates:
       category_names:
-       - "{{ update_category | default(omit) }}"
+       - "{{ update_catagory | default(omit) }}"
       state: searched
     register: update_result
 
@@ -163,30 +126,3 @@ handlers:
       state: restarted
       start_mode: auto
 ----
-
-=== Key Components Explained
-
-**Update Scanning:**
-- Uses `ansible.windows.win_updates` module in search mode
-- Filters by specified update categories
-- Registers results for report generation
-
-**Report Generation:**
-- Leverages Jinja2 templating for dynamic HTML creation
-- Publishes reports directly to IIS web server
-- Provides accessible, shareable format for stakeholders
-
-**Service Management:**
-- Automatically restarts IIS after report publication
-- Ensures web service availability for report access
-
-== Key Takeaways
-
-Congratulations! You've successfully automated multiple critical IT operations tasks:
-
-* ✅ **Automated Backup Operations**: Implemented XFS backups for Linux and VSS snapshots for Windows
-* ✅ **Infrastructure Data Collection**: Gathered comprehensive system facts and generated dynamic reports
-* ✅ **Security Compliance**: Automated OpenSCAP compliance scanning and reporting
-* ✅ **Patch Management**: Created dynamic Windows update reports with configurable survey options
-* ✅ **Scheduled Automation**: Configured recurring tasks that run without manual intervention
-
