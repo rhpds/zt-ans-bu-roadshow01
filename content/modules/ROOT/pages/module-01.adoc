@@ -35,7 +35,7 @@ In the lab's `aap` tab, log in and navigate to the menu in the top-left. Go to *
 +
 The job output will show that no backups are currently available.
 +
-image::../assets/images/backupcheck.png[Initial backup check showing no backups, opts="border"]
+image::backupcheck.png[Initial backup check showing no backups, opts="border"]
 
 . **Create a backup of the RHEL servers.**
 +
