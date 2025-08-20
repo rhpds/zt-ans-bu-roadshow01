@@ -70,7 +70,7 @@ Navigate to **Automation Execution** → **Templates** and launch the **Applicat
 +
 The template will prompt you with a survey. For now, select **All** to generate a report for all servers.
 
-. **View the report.**
+. **View the report.** (Images might change depending on versions)
 +
 Once the job completes, navigate to the **Report Server tab** in your lab environment and refresh the page. You will see a newly generated report.
 +
