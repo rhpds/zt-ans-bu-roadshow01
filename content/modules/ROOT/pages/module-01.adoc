@@ -4,6 +4,8 @@
 :sectnums:
 :icons: font
 
+v0.0.1
+
 _A guide to using Ansible Automation Platform for read-only introspection and automating system backups for both Linux and Windows._
 
 ---
