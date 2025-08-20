@@ -31,7 +31,7 @@ Let's start by gathering detailed information, or "facts," from a single server 
 +
 In the lab's `aap` tab, log in and navigate to **Automation Execution** → **Infrastructure** → **Inventories**. Select the **Video Platform Inventory**, then click the **Hosts** tab.
 +
-image::../assets/images/node01-setup.png[Inventory hosts view, opts="border"]
+image::node01-setup.png[Inventory hosts view, opts="border"]
 
 . **Run an ad-hoc command on `node01`.**
 +
@@ -44,7 +44,7 @@ Fill out the wizard prompts as follows:
 --
 a. *Module:* From the dropdown list, select the `setup` module. This module gathers facts about a remote host. Click **Next**.
 +
-image::../assets/images/setup.png[Selecting the setup module, opts="border"]
+image::setup.png[Selecting the setup module, opts="border"]
 +
 b. *Execution Environment:* Select the **Default execution environment**. Click **Next**.
 c. *Credentials:* Select the **Application Nodes** credential. Click **Next**, then click **Finish**.
@@ -54,7 +54,7 @@ c. *Credentials:* Select the **Application Nodes** credential. Click **Next**, t
 +
 Once the command finishes, the output will display a large JSON object containing all the system facts Ansible was able to gather from `node01`.
 +
-image::../assets/images/setup-output.png[System facts output from the setup module, opts="border"]
+image::setup-output.png[System facts output from the setup module, opts="border"]
 
 ---
 
@@ -74,11 +74,11 @@ The template will prompt you with a survey. For now, select **All** to generate 
 +
 Once the job completes, navigate to the **Report Server tab** in your lab environment and refresh the page. You will see a newly generated report.
 +
-image::../assets/images/srv-report.png[Generated application server report, opts="border"]
+image::srv-report.png[Generated application server report, opts="border"]
 +
 Notice that the report can combine information from multiple sources, including the backup status of the servers.
 +
-image::../assets/images/backup-data.png[Backup data included in the report, opts="border"]
+image::backup-data.png[Backup data included in the report, opts="border"]
 
 ---
 
@@ -94,13 +94,13 @@ Navigate to **Automation Execution** → **Templates** and launch the **OpenSCAP
 +
 Once the job completes, navigate to the **Compliance Report tab**. You will see a folder containing the newly generated report.
 +
-image::../assets/images/compliance_report_folder.png[OpenSCAP report folder view, opts="border"]
+image::compliance_report_folder.png[OpenSCAP report folder view, opts="border"]
 
 . **View the detailed report.**
 +
 Click on the HTML file to open the full OpenSCAP report and view the detailed compliance results.
 +
-image::../assets/images/compliance_report.png[Detailed OpenSCAP compliance report, opts="border"]
+image::compliance_report.png[Detailed OpenSCAP compliance report, opts="border"]
 
 ---
 
