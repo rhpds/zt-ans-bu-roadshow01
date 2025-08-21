@@ -39,7 +39,7 @@ Go to the **Survey** tab and click **Create survey question**. Configure it with
 +
 * **Question:** `Which update category are you wanting to search for?`
 * **Description:** `Windows Update Category`
-* **Answer variable name:** `update_catagory`
+* **Answer variable name:** `update_category`
 * **Answer type:** `Multiple Choice (single select)`
 * **Multiple Choice Options:** `Security Updates`, `Critical Updates`, `Tools`, `Definition Updates`, `Updates`
 +
