@@ -59,7 +59,7 @@ Now that your RHEL systems are backed up, let's address the Windows systems. Win
 
 . **Create a VSS snapshot.**
 +
-Navigate to **Automation Execution** → **Templates** and launch the **Server Snapshot - VSS/Windows** job template.
+Navigate to **Automation Execution** → **Templates** and launch the **Server Backup - VSS/Windows** job template.
 +
 image::vss-snap.png[VSS snapshot job for Windows in progress, opts="border"]
 
