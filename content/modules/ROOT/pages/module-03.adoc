@@ -59,7 +59,7 @@ Navigate back to the main **Templates** list and launch the **Windows Update Rep
 
 . **View the generated report.**
 +
-Once the job has completed, navigate to the **Windows Report** tab in your lab environment. You should see the report detailing the outstanding security update needed for the system.
+Once the job has completed, navigate to the **Windows UI** tab in your lab environment. You should see the report detailing the outstanding security update needed for the system.
 +
 image::update-report.png[Generated Windows update report, opts="border"]
 
