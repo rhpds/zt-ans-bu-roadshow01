@@ -84,8 +84,9 @@ Configure the schedule with the following details:
 * **Schedule Name:** `5 Min Snappy`
 * **Description:** `Automated VSS Snaps`
 * **Frequency:** `Minutely`
-* **Interval:** `5`
+* **Interval:** `2`
 +
+Click **Save Rule** before proceeding.
 Click **Next** through the rules and exceptions panes, and then click **Finish** to save the schedule. Your snapshots will now run automatically every five minutes.
 +
 image::shed-details.png[Configuring schedule details, opts="border"]
