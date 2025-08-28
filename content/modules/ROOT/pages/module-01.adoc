@@ -26,9 +26,8 @@ First, log into the Ansible Automation Platform instance using the credentials b
 
 The Public repo for this lab is: https://github.com/ansible-tmm/aap25-roadshow
 
-**Note** You might need to change the language on AAP if your browser has multiple languages enabled.
----
----
+==**Note** You might need to change the language on AAP if your browser has multiple languages enabled.
+
 
 == Backing Up Linux File Systems
 
