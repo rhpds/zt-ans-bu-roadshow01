@@ -7,7 +7,11 @@
 v0.0.1
 
 _A guide to using Ansible Automation Platform for read-only introspection and automating system backups for both Linux and Windows._
+---
+The Public repo for this lab is: https://github.com/ansible-tmm/aap25-roadshow
 
+**Note** You might need to change the language on AAP if your browser has multiple languages enabled.
+---
 ---
 
 == Scenario: Introspection
