@@ -23,6 +23,7 @@ First, log into the Ansible Automation Platform instance using the credentials b
 | Username | `admin`
 | Password | `ansible123!`
 |===
+
 +
 NOTE: You might need to change the language on AAP if your browser has multiple languages enabled.
 +
