@@ -7,6 +7,7 @@
 v0.0.1
 
 _A guide to using Ansible Automation Platform for read-only introspection and automating system backups for both Linux and Windows._
+---
 
 ---
 
@@ -23,7 +24,12 @@ First, log into the Ansible Automation Platform instance using the credentials b
 | Password | `ansible123!`
 |===
 
----
+[cols="1,2a"]
+|===
+| Note | `You might need to change the language on AAP if your browser has multiple languages enabled.`
+| Repo | `https://github.com/ansible-tmm/aap25-roadshow`
+|===
+
 
 == Backing Up Linux File Systems
 
@@ -81,7 +87,7 @@ image::win-shed.png[Creating a new schedule for a job template, opts="border"]
 +
 Configure the schedule with the following details:
 +
-* **Schedule Name:** `5 Min Snappy`
+* **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
 * **Frequency:** `Minutely`
 * **Interval:** `2`
@@ -118,10 +124,4 @@ tasks:
     cmd: >
       xfsdump -l 0 -L {{ backup_label }}
       -f {{ backup_file }} {{ xfs_mount_point }}
-  register: backup_result
-  ignore_errors: no
-
-- name: Verify xfsdump success
-  ansible.builtin.debug:
-    msg: "Backup completed successfully: {{ backup_result.stdout }}"
-----
+  register: 
