@@ -81,7 +81,7 @@ image::win-shed.png[Creating a new schedule for a job template, opts="border"]
 +
 Configure the schedule with the following details:
 +
-* **Schedule Name:** `5 Min Snappy`
+* **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
 * **Frequency:** `Minutely`
 * **Interval:** `2`
