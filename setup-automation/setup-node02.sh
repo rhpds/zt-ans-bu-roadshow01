@@ -60,7 +60,9 @@ cat <<EOF | tee /var/www/html/index.html
 
 EOF
 
-systemctl start httpd
+
+retry "systemctl start httpd"
+
 
 mkdir /backup
 chmod -R 777 /backup
