@@ -24,10 +24,11 @@ First, log into the Ansible Automation Platform instance using the credentials b
 | Password | `ansible123!`
 |===
 
-+
-NOTE: You might need to change the language on AAP if your browser has multiple languages enabled.
-+
-The Public repo for this lab is: https://github.com/ansible-tmm/aap25-roadshow
+[cols="1,2a"]
+|===
+| Note | `You might need to change the language on AAP if your browser has multiple languages enabled.`
+| Repo | `https://github.com/ansible-tmm/aap25-roadshow`
+|===
 
 
 == Backing Up Linux File Systems
