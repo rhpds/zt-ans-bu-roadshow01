@@ -18,6 +18,7 @@ KATELLO_INSTALLED=$(rpm -qa | grep -c katello)
 if [ $KATELLO_INSTALLED -eq 0 ]; then
   retry "rpm -Uhv https://${SATELLITE_URL}/pub/katello-ca-consumer-latest.noarch.rpm"
 fi
+subscription-manager status
 if [ $? -ne 0 ]; then
     retry "subscription-manager register --org=${SATELLITE_ORG} --activationkey=${SATELLITE_ACTIVATIONKEY}"
 fi
