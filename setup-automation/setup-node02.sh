@@ -18,7 +18,9 @@ KATELLO_INSTALLED=$(rpm -qa | grep -c katello)
 if [ $KATELLO_INSTALLED -eq 0 ]; then
   retry "rpm -Uhv https://${SATELLITE_URL}/pub/katello-ca-consumer-latest.noarch.rpm"
 fi
-retry "subscription-manager register --org=${SATELLITE_ORG} --activationkey=${SATELLITE_ACTIVATIONKEY}"
+if [ $? -ne 0 ]; then
+    retry "subscription-manager register --org=${SATELLITE_ORG} --activationkey=${SATELLITE_ACTIVATIONKEY}"
+fi
 retry "dnf install httpd nano xfsdump penscap-scanner openscap-utils scap-security-guide -y"
 
 # curl -k  -L https://${SATELLITE_URL}/pub/katello-server-ca.crt -o /etc/pki/ca-trust/source/anchors/${SATELLITE_URL}.ca.crt
