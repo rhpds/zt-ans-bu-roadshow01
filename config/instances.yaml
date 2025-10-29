@@ -135,7 +135,7 @@ virtualmachines:
           -----END CERTIFICATE-----
   - name: "node01"
     image: "rhel-9.5"
-    memory: "2G"
+    memory: "8G"
     cores: 2
     image_size: "30Gi"
     tags:
@@ -154,7 +154,7 @@ virtualmachines:
 
   - name: "node02"
     image: "rhel-8.7"
-    memory: "2G"
+    memory: "8G"
     cores: 2
     image_size: "30Gi"
     tags:
@@ -187,7 +187,7 @@ virtualmachines:
         
   - name: "node03"
     image: "rhel-9.5"
-    memory: "2G"
+    memory: "8G"
     cores: 2
     image_size: "30Gi"
     tags:
