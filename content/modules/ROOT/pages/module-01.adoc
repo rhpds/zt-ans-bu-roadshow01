@@ -131,3 +131,7 @@ tasks:
   ansible.builtin.debug:
     msg: "Backup completed successfully: {{ backup_result.stdout }}"
 ----
+
+== Troubleshooting
+
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub].
