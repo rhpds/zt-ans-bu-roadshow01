@@ -546,28 +546,7 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
   hosts: "win"
   gather_facts: false
   tasks:
-    - name: Ensure WinRM service is running
-      ansible.windows.win_service:
-        name: WinRM
-        state: started
-        start_mode: auto
-
-    - name: Enable PowerShell remoting (idempotent)
-      ansible.windows.win_shell: |
-        try { Enable-PSRemoting -Force -SkipNetworkProfileCheck } catch { }
-      args:
-        executable: powershell.exe
-      changed_when: false
-      failed_when: false
-
-    - name: Ensure IIS features are present
-      ansible.windows.win_feature:
-        name:
-          - Web-Server
-          - Web-Mgmt-Console
-        state: present
-        include_management_tools: true
-
+  
     - name: Disable Server Manager auto-start at logon (policy, all users)
       ansible.windows.win_regedit:
         path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager
@@ -604,12 +583,6 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
       ansible.windows.win_reboot:
         msg: "Reboot to finalize Chocolatey/slmgr setup"
         pre_reboot_delay: 5
-
-    - name: Set MapsBroker to manual and stopped (silence Server Manager)
-      ansible.windows.win_service:
-        name: MapsBroker
-        start_mode: manual
-        state: stopped
 
 EOF
 
