@@ -546,14 +546,6 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
   hosts: "win"
   gather_facts: false
   tasks:
-  
-    - name: Disable Server Manager auto-start at logon (policy, all users)
-      ansible.windows.win_regedit:
-        path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager
-        name: DoNotOpenAtLogon
-        data: 1
-        type: dword
-        state: present
 
     - name: Execute slmgr /rearm
       ansible.windows.win_powershell:
