@@ -27,6 +27,7 @@ storage01
 [all]
 node01
 node02
+windows ansible_host=windows ansible_user=Administrator ansible_password=Ansible123! ansible_connection=winrm ansible_port=5986 ansible_winrm_scheme=https ansible_winrm_transport=credssp ansible_winrm_server_cert_validation=ignore
 
 [all:vars]
 ansible_user = rhel
