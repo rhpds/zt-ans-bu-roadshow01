@@ -27,6 +27,8 @@ storage01
 [all]
 node01
 node02
+
+[win]
 windows ansible_host=windows ansible_user=Administrator ansible_password=Ansible123! ansible_connection=winrm ansible_port=5986 ansible_winrm_scheme=https ansible_winrm_transport=credssp ansible_winrm_server_cert_validation=ignore
 
 [all:vars]
@@ -541,7 +543,7 @@ ANSIBLE_COLLECTIONS_PATH=/tmp/ansible-automation-platform-containerized-setup-bu
 cat <<'EOF' | tee /tmp/windows-setup.yml
 ---
 - name: Push and execute windows-setup.ps1 on Windows
-  hosts: "Windows Directory Servers"
+  hosts: "win"
   gather_facts: false
   tasks:
     - name: Ensure WinRM service is running
@@ -566,21 +568,6 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
         state: present
         include_management_tools: true
 
-    - name: Create IIS landing page
-      ansible.windows.win_copy:
-        dest: C:\\inetpub\\wwwroot\\index.html
-        content: |
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>Windows AD Lab</title>
-          </head>
-          <body>
-              <h1>Windows AD Domain Controller</h1>
-              <p>This is the Windows AD domain controller for the lab.</p>
-          </body>
-          </html>
-
     - name: Disable Server Manager auto-start at logon (policy, all users)
       ansible.windows.win_regedit:
         path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager
@@ -588,20 +575,6 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
         data: 1
         type: dword
         state: present
-
-    - name: Ensure AD DS feature is present
-      ansible.windows.win_feature:
-        name: AD-Domain-Services
-        include_management_tools: true
-        state: present
-
-    - name: Install Chocolatey
-      ansible.windows.win_shell: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-      args:
-        executable: powershell.exe
 
     - name: Execute slmgr /rearm
       ansible.windows.win_powershell:
@@ -638,25 +611,7 @@ cat <<'EOF' | tee /tmp/windows-setup.yml
         start_mode: manual
         state: stopped
 
-    - name: Install Microsoft Edge via Chocolatey (with retries)
-      ansible.windows.win_shell: choco install microsoft-edge -y --no-progress
-      args:
-        executable: powershell.exe
-      register: edge_install
-      retries: 3
-      delay: 20
-      until: edge_install.rc == 0
-
-    - name: Verify Edge installed
-      ansible.windows.win_stat:
-        path: C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe
-      register: edge_bin
-
-    - name: Fail if Edge not installed
-      ansible.builtin.fail:
-        msg: 'Edge did not install; check Chocolatey logs on the VM'
-      when: not edge_bin.stat.exists
 EOF
 
 echo "=== Running Windows set up ==="
-ANSIBLE_COLLECTIONS_PATH=/tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections/:/root/.ansible/collections/ansible_collections/ ansible-playbook -e @/tmp/track-vars.yml -i /tmp/inventory /tmp/windows-setup.yml
+ANSIBLE_COLLECTIONS_PATH=/tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections/:/root/.ansible/collections/ansible_collections/ ansible-playbook -i /tmp/inventory /tmp/windows-setup.yml
