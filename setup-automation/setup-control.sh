@@ -3,6 +3,20 @@
 systemctl stop systemd-tmpfiles-setup.service
 systemctl disable systemd-tmpfiles-setup.service
 
+
+
+
+
+
+# Ensure Python WinRM dependencies on control
+if ! command -v pip3 >/dev/null 2>&1; then
+  dnf -y install python3-pip || yum -y install python3-pip || true
+fi
+python3 -m pip install --upgrade pip || true
+python3 -m pip install 'pywinrm[credssp]' requests-credssp requests-ntlm || true
+
+
+
 # Install collection(s)
 ansible-galaxy collection install ansible.eda
 ansible-galaxy collection install community.general
