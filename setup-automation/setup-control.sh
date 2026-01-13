@@ -3,11 +3,6 @@
 systemctl stop systemd-tmpfiles-setup.service
 systemctl disable systemd-tmpfiles-setup.service
 
-
-
-
-
-
 # Ensure Python WinRM dependencies on control
 if ! command -v pip3 >/dev/null 2>&1; then
   dnf -y install python3-pip || yum -y install python3-pip || true
