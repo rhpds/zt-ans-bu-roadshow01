@@ -4,7 +4,10 @@
 :sectnums:
 :icons: font
 
+v0.0.1
+
 _A guide to using Ansible Automation Platform for read-only introspection and automating system backups for both Linux and Windows._
+---
 
 ---
 
@@ -21,7 +24,12 @@ First, log into the Ansible Automation Platform instance using the credentials b
 | Password | `ansible123!`
 |===
 
----
+[cols="1,2a"]
+|===
+| Note | `You might need to change the language on AAP if your browser has multiple languages enabled.`
+| Repo | `https://github.com/ansible-tmm/aap25-roadshow`
+|===
+
 
 == Backing Up Linux File Systems
 
@@ -33,7 +41,7 @@ In the lab's `aap` tab, log in and navigate to the menu in the top-left. Go to *
 +
 The job output will show that no backups are currently available.
 +
-image::../assets/images/backupcheck.png[Initial backup check showing no backups, opts="border"]
+image::backupcheck.png[Initial backup check showing no backups, opts="border"]
 
 . **Create a backup of the RHEL servers.**
 +
@@ -41,13 +49,13 @@ Navigate back to **Automation Execution** → **Templates** and launch the **Ser
 +
 NOTE: This backup job will take approximately 6-7 minutes to complete. You can proceed with other tasks and check back on its progress later.
 +
-image::../assets/images/xfsbackup.png[XFS backup job in progress, opts="border"]
+image::xfsbackup.png[XFS backup job in progress, opts="border"]
 
 . **Verify the new backups.**
 +
 Once the backup job has completed successfully, launch the **Check RHEL Backups** template again. This time, the output will confirm that the backups were created successfully.
 +
-image::../assets/images/afterbackupcheck.png[Second backup check confirming new backups, opts="border"]
+image::afterbackupcheck.png[Second backup check confirming new backups, opts="border"]
 
 ---
 
@@ -57,9 +65,9 @@ Now that your RHEL systems are backed up, let's address the Windows systems. Win
 
 . **Create a VSS snapshot.**
 +
-Navigate to **Automation Execution** → **Templates** and launch the **Server Snapshot - VSS/Windows** job template.
+Navigate to **Automation Execution** → **Templates** and launch the **Server Backup - VSS/Windows** job template.
 +
-image::../assets/images/vss-snap.png[VSS snapshot job for Windows in progress, opts="border"]
+image::vss-snap.png[VSS snapshot job for Windows in progress, opts="border"]
 
 . **Confirm the VSS snapshot.**
 +
@@ -67,7 +75,7 @@ Once completed, navigate back to **Automation Execution** → **Templates** and 
 +
 The output will confirm that the VSS snapshot was created successfully.
 +
-image::../assets/images/vss-snap-check.png[Checking for the VSS snapshot, opts="border"]
+image::vss-snap-check.png[Checking for the VSS snapshot, opts="border"]
 
 . **Schedule recurring snapshots.**
 +
@@ -75,18 +83,19 @@ To run these snapshots automatically, you can create a schedule. Navigate to **A
 +
 Go to the **Schedules** tab and click **Create schedule**.
 +
-image::../assets/images/win-shed.png[Creating a new schedule for a job template, opts="border"]
+image::win-shed.png[Creating a new schedule for a job template, opts="border"]
 +
 Configure the schedule with the following details:
 +
-* **Schedule Name:** `5 Min Snappy`
+* **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
 * **Frequency:** `Minutely`
-* **Interval:** `5`
+* **Interval:** `2`
 +
+Click **Save Rule** before proceeding.
 Click **Next** through the rules and exceptions panes, and then click **Finish** to save the schedule. Your snapshots will now run automatically every five minutes.
 +
-image::../assets/images/shed-details.png[Configuring schedule details, opts="border"]
+image::shed-details.png[Configuring schedule details, opts="border"]
 
 ---
 
@@ -122,3 +131,7 @@ tasks:
   ansible.builtin.debug:
     msg: "Backup completed successfully: {{ backup_result.stdout }}"
 ----
+
+== Troubleshooting
+
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub].
