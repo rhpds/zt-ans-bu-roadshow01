@@ -89,11 +89,8 @@ Configure the schedule with the following details:
 +
 * **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
-* **Frequency:** `Minutely`
-* **Interval:** `2`
 +
-Click **Save Rule** before proceeding.
-Click **Next** through the rules and exceptions panes, and then click **Finish** to save the schedule. Your snapshots will now run automatically every two minutes.
+Click **Next** to proceed to the **Define Rules** step. Set the **Frequency** to `Minutely` with an **Interval** of `2`. Click **Save Rule**, then click **Next** through the Exceptions pane and click **Finish** to save the schedule. Your snapshots will now run automatically every two minutes.
 +
 image::shed-details.png[Configuring schedule details, opts="border"]
 
