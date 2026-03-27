@@ -1,0 +1,129 @@
+---
+# validation.yml — Module 01: Introspection and System Backups
+
+# Check RHEL Backup job ran successfully
+- name: Get Check RHEL Backup template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Check+RHEL+Backup"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_check_rhel
+
+- name: Get Check RHEL Backup jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_check_rhel.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_check_rhel_jobs
+  when: r_check_rhel.json.count > 0
+
+# Server Backup XFS/RHEL job ran successfully
+- name: Get Server Backup XFS/RHEL template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Server+Backup+-+XFS%2FRHEL"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_xfs
+
+- name: Get Server Backup XFS/RHEL jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_xfs.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_xfs_jobs
+  when: r_xfs.json.count > 0
+
+# Server Backup VSS/Windows job ran successfully
+- name: Get Server Backup VSS/Windows template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Server+Backup+-+VSS%2FWindows"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_vss
+
+- name: Get Server Backup VSS/Windows jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_vss.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_vss_jobs
+  when: r_vss.json.count > 0
+
+# Check Windows Backups job ran successfully
+- name: Get Check Windows Backups template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Check+Windows+Backups"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_check_win
+
+- name: Get Check Windows Backups jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_check_win.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_check_win_jobs
+  when: r_check_win.json.count > 0
+
+# Check schedule exists
+- name: Get VSS template schedules
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_vss.json.results[0].id }}/schedules/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_schedules
+  when: r_vss.json.count > 0
+
+# Evaluate results
+- name: Set validation results
+  ansible.builtin.set_fact:
+    check_rhel_ok: "{{ r_check_rhel.json.count > 0 and (r_check_rhel_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+    xfs_ok: "{{ r_xfs.json.count > 0 and (r_xfs_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+    vss_ok: "{{ r_vss.json.count > 0 and (r_vss_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+    check_win_ok: "{{ r_check_win.json.count > 0 and (r_check_win_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+    schedule_ok: "{{ r_schedules.json.results | default([]) | selectattr('name', 'equalto', '2 Min Snappy') | list | length > 0 }}"
+
+- name: Set validation output
+  ansible.builtin.set_fact:
+    validation_output: |
+      Module 1 Validation
+      ===================
+      {{ '[OK]' if check_rhel_ok | bool else '[X] ' }} Check RHEL Backup job launched
+      {{ '[OK]' if xfs_ok | bool else '[X] ' }} Server Backup - XFS/RHEL job launched
+      {{ '[OK]' if vss_ok | bool else '[X] ' }} Server Backup - VSS/Windows job launched
+      {{ '[OK]' if check_win_ok | bool else '[X] ' }} Check Windows Backups job launched
+      {{ '[OK]' if schedule_ok | bool else '[X] ' }} Schedule "2 Min Snappy" created
+    validation_passed: >-
+      {{ check_rhel_ok | bool and xfs_ok | bool and vss_ok | bool and check_win_ok | bool and schedule_ok | bool }}
+
+- name: Write failure details
+  ansible.builtin.copy:
+    content: "{{ validation_output }}"
+    dest: "{{ job_info_dir }}/validation_failure.out"
+  delegate_to: localhost
+  when:
+    - job_info_dir is defined
+    - not validation_passed | bool
+
+- name: Fail if not passed
+  ansible.builtin.fail:
+    msg: "Complete the missing tasks and try again."
+  when: not validation_passed | bool
