@@ -11,9 +11,14 @@
     aap_password: "ansible123!"
 
   tasks:
+    - name: Check for secrets file
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/secrets.yaml"
+      register: r_secrets_file
+
     - name: Load secrets (vault-decrypted via VAULT_PASSWORD env var)
       ansible.builtin.include_vars: secrets.yaml
-      ignore_errors: true
+      when: r_secrets_file.stat.exists
 
     - name: Include module tasks
       ansible.builtin.include_tasks: "{{ _module_dir }}/{{ module_stage }}.yml"

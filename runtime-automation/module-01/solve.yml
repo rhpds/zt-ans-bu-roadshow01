@@ -107,6 +107,37 @@
     msg: "Server Backup XFS/RHEL failed with status: {{ r_job.json.status }}"
   when: r_job.json.status != 'successful'
 
+# Step 3b: Re-run Check RHEL Backup after XFS/RHEL completes
+- name: Launch Check RHEL Backup (post-XFS)
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ check_rhel_id }}/launch/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body: {}
+    status_code: [200, 201]
+  register: r_launch_check_rhel2
+
+- name: Wait for Check RHEL Backup (post-XFS)
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/jobs/{{ r_launch_check_rhel2.json.id }}/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_job
+  until: r_job.json.status in ['successful', 'failed', 'error', 'canceled']
+  retries: 60
+  delay: 10
+
+- name: Fail if Check RHEL Backup (post-XFS) failed
+  ansible.builtin.fail:
+    msg: "Check RHEL Backup (post-XFS) failed with status: {{ r_job.json.status }}"
+  when: r_job.json.status != 'successful'
+
 # Step 4: Launch Server Backup - VSS/Windows
 - name: Launch Server Backup VSS/Windows
   ansible.builtin.uri:
