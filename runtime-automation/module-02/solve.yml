@@ -1,0 +1,146 @@
+---
+# solve.yml — Module 02: Infrastructure Introspection and Reporting
+
+# Step 1: Run ad-hoc command (setup module on node01)
+- name: Get Video Platform Inventory
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/inventories/?name=Video+Platform+Inventory"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_inv
+
+- name: Get Application Nodes credential
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/credentials/?name=Application+Nodes"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_cred
+
+- name: Get Default execution environment
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/execution_environments/?name=Default+execution+environment"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_ee
+
+- name: Launch ad-hoc setup command on node01
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/ad_hoc_commands/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body:
+      module_name: "setup"
+      module_args: ""
+      inventory: "{{ r_inv.json.results[0].id }}"
+      credential: "{{ r_cred.json.results[0].id }}"
+      execution_environment: "{{ r_ee.json.results[0].id }}"
+      limit: "node01"
+    status_code: [200, 201]
+  register: r_adhoc
+
+- name: Wait for ad-hoc command
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/ad_hoc_commands/{{ r_adhoc.json.id }}/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_adhoc_status
+  until: r_adhoc_status.json.status in ['successful', 'failed', 'error', 'canceled']
+  retries: 30
+  delay: 5
+
+- name: Warn if ad-hoc command failed
+  ansible.builtin.debug:
+    msg: "WARNING: Ad-hoc command finished with status: {{ r_adhoc_status.json.status }}"
+  when: r_adhoc_status.json.status != 'successful'
+
+# Step 2: Launch Application Server Report
+- name: Get Application Server Report template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Application+Server+Report"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_app_report
+
+- name: Launch Application Server Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_app_report.json.results[0].id }}/launch/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body: {}
+    status_code: [200, 201]
+  register: r_launch_app
+
+- name: Wait for Application Server Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/jobs/{{ r_launch_app.json.id }}/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_job
+  until: r_job.json.status in ['successful', 'failed', 'error', 'canceled']
+  retries: 60
+  delay: 10
+
+- name: Warn if Application Server Report failed
+  ansible.builtin.debug:
+    msg: "WARNING: Application Server Report finished with status: {{ r_job.json.status }}"
+  when: r_job.json.status != 'successful'
+
+# Step 3: Launch OpenSCAP Report
+- name: Get OpenSCAP Report template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=OpenSCAP+Report"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_oscap
+
+- name: Launch OpenSCAP Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_oscap.json.results[0].id }}/launch/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body: {}
+    status_code: [200, 201]
+  register: r_launch_oscap
+
+- name: Wait for OpenSCAP Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/jobs/{{ r_launch_oscap.json.id }}/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_job
+  until: r_job.json.status in ['successful', 'failed', 'error', 'canceled']
+  retries: 60
+  delay: 10
+
+- name: Warn if OpenSCAP Report failed
+  ansible.builtin.debug:
+    msg: "WARNING: OpenSCAP Report finished with status: {{ r_job.json.status }}"
+  when: r_job.json.status != 'successful'

@@ -12,10 +12,16 @@ antora:
         - validation
     - name: module-02
       label: "Infrastructure Reporting"
-      solveButton: false
+      solveButton: true
+      scripts:
+        - solve
+        - validation
     - name: module-03
       label: "Windows Reporting"
-      solveButton: false
+      solveButton: true
+      scripts:
+        - solve
+        - validation
 
 tabs:
   - name: aap

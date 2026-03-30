@@ -1,0 +1,84 @@
+---
+# validation.yml — Module 02: Infrastructure Introspection and Reporting
+
+# Check ad-hoc command (setup module) was run
+- name: Get ad-hoc commands
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/ad_hoc_commands/?order_by=-finished&page_size=20"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_adhoc
+
+# Check Application Server Report ran successfully
+- name: Get Application Server Report template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Application+Server+Report"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_app_report
+
+- name: Get Application Server Report jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_app_report.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_app_report_jobs
+  when: r_app_report.json.count > 0
+
+# Check OpenSCAP Report ran successfully
+- name: Get OpenSCAP Report template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=OpenSCAP+Report"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_oscap
+
+- name: Get OpenSCAP Report jobs
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ r_oscap.json.results[0].id }}/jobs/?order_by=-finished&page_size=10"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_oscap_jobs
+  when: r_oscap.json.count > 0
+
+# Evaluate results
+- name: Set validation results
+  ansible.builtin.set_fact:
+    adhoc_ok: "{{ r_adhoc.json.results | default([]) | selectattr('module_name', 'equalto', 'setup') | list | length > 0 }}"
+    app_report_ok: "{{ r_app_report.json.count > 0 and (r_app_report_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+    oscap_ok: "{{ r_oscap.json.count > 0 and (r_oscap_jobs.json.results | default([]) | selectattr('status', 'equalto', 'successful') | list | length > 0) }}"
+
+- name: Set validation output
+  ansible.builtin.set_fact:
+    validation_output: |
+      Module 2 Validation
+      ===================
+      {{ '[OK]' if adhoc_ok | bool else '[X] ' }} Ad-hoc command (setup module) executed
+      {{ '[OK]' if app_report_ok | bool else '[X] ' }} Application Server Report job launched
+      {{ '[OK]' if oscap_ok | bool else '[X] ' }} OpenSCAP Report job launched
+    validation_passed: >-
+      {{ adhoc_ok | bool and app_report_ok | bool and oscap_ok | bool }}
+
+- name: Write failure details
+  ansible.builtin.copy:
+    content: "{{ validation_output }}"
+    dest: "{{ job_info_dir }}/validation_failure.out"
+  delegate_to: localhost
+  when:
+    - job_info_dir is defined
+    - not validation_passed | bool
+
+- name: Fail if not passed
+  ansible.builtin.fail:
+    msg: "Complete the missing tasks and try again."
+  when: not validation_passed | bool

@@ -1,0 +1,107 @@
+---
+# solve.yml — Module 03: Generating a Windows Patch Report
+
+# Step 1: Get Windows Update Report template
+- name: Get Windows Update Report template
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/?name=Windows+Update+Report"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_wur
+
+- name: Set template ID
+  ansible.builtin.set_fact:
+    wur_id: "{{ r_wur.json.results[0].id }}"
+
+# Step 2: Create survey on the template
+- name: Check if survey already exists
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ wur_id }}/survey_spec/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_survey
+
+- name: Set survey exists fact
+  ansible.builtin.set_fact:
+    survey_exists: "{{ r_survey.json.spec | default([]) | selectattr('variable', 'equalto', 'update_category') | list | length > 0 }}"
+
+- name: Create survey on Windows Update Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ wur_id }}/survey_spec/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body:
+      name: ""
+      description: ""
+      spec:
+        - question_name: "Which update category are you wanting to search for?"
+          question_description: "Windows Update Category"
+          required: true
+          type: "multiplechoice"
+          variable: "update_category"
+          min: 0
+          max: 1024
+          default: "Security Updates"
+          choices:
+            - "Security Updates"
+            - "Critical Updates"
+            - "Tools"
+            - "Definition Updates"
+            - "Updates"
+    status_code: [200, 201]
+  when: not survey_exists | bool
+
+# Step 3: Enable the survey
+- name: Enable survey on Windows Update Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ wur_id }}/"
+    method: PATCH
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body:
+      survey_enabled: true
+    status_code: [200]
+
+# Step 4: Launch Windows Update Report with "Security Updates"
+- name: Launch Windows Update Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/job_templates/{{ wur_id }}/launch/"
+    method: POST
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+    body_format: json
+    body:
+      extra_vars:
+        update_category: "Security Updates"
+    status_code: [200, 201]
+  register: r_launch_wur
+
+- name: Wait for Windows Update Report
+  ansible.builtin.uri:
+    url: "{{ aap_host }}/api/controller/v2/jobs/{{ r_launch_wur.json.id }}/"
+    user: "{{ aap_username }}"
+    password: "{{ aap_password }}"
+    force_basic_auth: true
+    validate_certs: false
+  register: r_job
+  until: r_job.json.status in ['successful', 'failed', 'error', 'canceled']
+  retries: 60
+  delay: 10
+
+- name: Warn if Windows Update Report failed
+  ansible.builtin.debug:
+    msg: "WARNING: Windows Update Report finished with status: {{ r_job.json.status }}"
+  when: r_job.json.status != 'successful'
