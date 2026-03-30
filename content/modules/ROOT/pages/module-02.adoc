@@ -48,7 +48,7 @@ image::setup.png[Selecting the setup module, opts="border"]
 +
 b. *Execution Environment:* Select the **Default execution environment**. Click **Next**.
 c. *Credential:* From the **Select credential** dropdown, choose the **Application Nodes** credential. Click **Next**.
-d. *Review:* Verify your selections and click **Launch**.
+d. *Review:* Verify your selections and click **Finish**.
 --
 
 . **Review the output.**

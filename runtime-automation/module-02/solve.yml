@@ -84,7 +84,9 @@
     force_basic_auth: true
     validate_certs: false
     body_format: json
-    body: {}
+    body:
+      extra_vars:
+        report_type: "All"
     status_code: [200, 201]
   register: r_launch_app
 
