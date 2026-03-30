@@ -183,6 +183,10 @@
   ansible.builtin.set_fact:
     schedule_exists: "{{ r_schedules.json.results | selectattr('name', 'equalto', '2 Min Snappy') | list | length > 0 }}"
 
+- name: Get current UTC timestamp
+  ansible.builtin.set_fact:
+    schedule_dtstart: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+
 - name: Create schedule 2 Min Snappy
   ansible.builtin.uri:
     url: "{{ aap_host }}/api/controller/v2/schedules/"
@@ -195,7 +199,7 @@
     body:
       name: "2 Min Snappy"
       description: "Automated VSS Snaps"
-      rrule: "DTSTART:{{ now(utc=true) | strftime('%Y%m%dT%H%M%SZ') }} RRULE:FREQ=MINUTELY;INTERVAL=2"
+      rrule: "DTSTART:{{ schedule_dtstart }} RRULE:FREQ=MINUTELY;INTERVAL=2"
       unified_job_template: "{{ vss_id | int }}"
     status_code: [200, 201]
   when: not schedule_exists | bool
