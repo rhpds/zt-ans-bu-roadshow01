@@ -20,5 +20,5 @@
       ansible.builtin.include_vars: secrets.yaml
       when: r_secrets_file.stat.exists
 
-    - name: Include module tasks
-      ansible.builtin.include_tasks: "{{ _module_dir }}/{{ module_stage }}.yml"
+    # - name: Include module tasks
+    #   ansible.builtin.include_tasks: "{{ _module_dir }}/{{ module_stage }}.yml"
