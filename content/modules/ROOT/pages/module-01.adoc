@@ -37,7 +37,7 @@ A common task for Linux servers is backing up their storage. Ansible can drive m
 
 . **Check for existing backups.**
 +
-In the lab's `aap` tab, log in and navigate to the menu in the top-left. Go to **Automation Execution** → **Templates** and launch the **Check RHEL Backups** job template by clicking the launch icon (🚀).
+In the lab's `aap` tab, log in and navigate to the menu in the top-left. Go to **Automation Execution** → **Templates** and launch the **Check RHEL Backup** job template by clicking the launch icon (🚀).
 +
 The job output will show that no backups are currently available.
 +
@@ -53,7 +53,7 @@ image::xfsbackup.png[XFS backup job in progress, opts="border"]
 
 . **Verify the new backups.**
 +
-Once the backup job has completed successfully, launch the **Check RHEL Backups** template again. This time, the output will confirm that the backups were created successfully.
+Once the backup job has completed successfully, launch the **Check RHEL Backup** template again. This time, the output will confirm that the backups were created successfully.
 +
 image::afterbackupcheck.png[Second backup check confirming new backups, opts="border"]
 
@@ -89,11 +89,13 @@ Configure the schedule with the following details:
 +
 * **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
-* **Frequency:** `Minutely`
-* **Interval:** `2`
 +
-Click **Save Rule** before proceeding.
-Click **Next** through the rules and exceptions panes, and then click **Finish** to save the schedule. Your snapshots will now run automatically every five minutes.
+Click **Next** to proceed to the **Define Rules** step. 
++
+* **Frequency:** `Minutely`
+* **Interval:** `2`. 
++
+Click **Save Rule**, then click **Next** through the Exceptions pane and click **Finish** to save the schedule. Your snapshots will now run automatically every two minutes.
 +
 image::shed-details.png[Configuring schedule details, opts="border"]
 

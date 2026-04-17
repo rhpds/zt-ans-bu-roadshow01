@@ -38,7 +38,6 @@ tabs:
     modules:
      - module-03
 
-
   # - name: Windows RDP
   #   url: https://windows-ironrdp-${guid}.${domain}/
   #   external: false
