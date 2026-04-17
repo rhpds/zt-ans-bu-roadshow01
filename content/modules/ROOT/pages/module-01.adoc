@@ -134,8 +134,6 @@ tasks:
     msg: "Backup completed successfully: {{ backup_result.stdout }}"
 ----
 
-NOTE: The Solve button for this module takes approximately 10-15 minutes to complete because the underlying lab jobs (especially the XFS backup) are long-running. This is expected behavior.
-
 == Troubleshooting
 
 If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub].
