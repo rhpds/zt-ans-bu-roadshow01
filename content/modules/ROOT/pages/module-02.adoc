@@ -48,7 +48,7 @@ image::setup.png[Selecting the setup module, opts="border"]
 +
 b. *Execution Environment:* Select the **Default execution environment**. Click **Next**.
 c. *Credential:* From the **Select credential** dropdown, choose the **Application Nodes** credential. Click **Next**.
-d. *Review:* Verify your selections and click **Launch**.
+d. *Review:* Verify your selections and click **Finish**.
 --
 
 . **Review the output.**
@@ -161,4 +161,4 @@ tasks:
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub^].

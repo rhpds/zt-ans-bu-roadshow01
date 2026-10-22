@@ -89,11 +89,13 @@ Configure the schedule with the following details:
 +
 * **Schedule Name:** `2 Min Snappy`
 * **Description:** `Automated VSS Snaps`
-* **Frequency:** `Minutely`
-* **Interval:** `2`
 +
-Click **Save Rule** before proceeding.
-Click **Next** through the rules and exceptions panes, and then click **Finish** to save the schedule. Your snapshots will now run automatically every five minutes.
+Click **Next** to proceed to the **Define Rules** step. 
++
+* **Frequency:** `Minutely`
+* **Interval:** `2`. 
++
+Click **Save Rule**, then click **Next** through the Exceptions pane and click **Finish** to save the schedule. Your snapshots will now run automatically every two minutes.
 +
 image::shed-details.png[Configuring schedule details, opts="border"]
 
@@ -134,4 +136,4 @@ tasks:
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Roadshow01&assignees=nmartins0611[open an issue on GitHub^].
